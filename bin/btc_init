@@ -24,6 +24,8 @@ EOF
 [[ -n $TXINDEX ]] && echo "txindex=1" >> $HOME/.bitcoin/bitcoin.conf
 [[ -n $RPCWORKQUEUE ]] && echo "rpcworkqueue=${RPCWORKQUEUE}" >> $HOME/.bitcoin/bitcoin.conf
 [[ -n $RPCTHREADS ]] && echo "rpcthreads=${RPCTHREADS}" >> $HOME/.bitcoin/bitcoin.conf
+[[ -n $PAR ]] && echo "par=${PAR}" >> $HOME/.bitcoin/bitcoin.conf
+[[ -n $DBCACHE ]] && echo "dbcache=${DBCACHE}" >> $HOME/.bitcoin/bitcoin.conf
 [[ -n $ZMQPUBHASHTX ]] && echo "zmqpubhashtx=${ZMQPUBHASHTX}" >> $HOME/.bitcoin/bitcoin.conf
 [[ -n $ZMQPUBHASHBLOCK ]] && echo "zmqpubhashblock=${ZMQPUBHASHBLOCK}" >> $HOME/.bitcoin/bitcoin.conf
 [[ -n $ZMQPUBRAWBLOCK ]] && echo "zmqpubrawblock=${ZMQPUBRAWBLOCK}" >> $HOME/.bitcoin/bitcoin.conf
