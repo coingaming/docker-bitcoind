@@ -1,6 +1,6 @@
 {
 	"name": "@heathmont/bitcoind",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Bitcoind",
 	"license": "UNLICENSED",
 	"repository": {
