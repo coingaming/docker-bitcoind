@@ -12,7 +12,7 @@
 	],
 	"scripts": {
 		"git:push": "git push && git push --tags",
-		"docker:build": "docker build . -t heathmont/bitcoind:$(git describe --abbrev=0)",
+		"docker:build": "docker build --no-cache . -t heathmont/bitcoind:$(git describe --abbrev=0)",
 		"docker:push": "docker push heathmont/bitcoind:$(git describe --abbrev=0)",
 		"docker:build:push": "npm run docker:build && npm run docker:push",
 		"release:patch": "npm version patch",
