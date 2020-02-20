@@ -1,36 +1,47 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 # This shouldn't be in the Dockerfile or containers built from the same image
 # will have the same credentials.
 mkdir -p $HOME/.bitcoin
 
 echo "Creating bitcoin.conf"
+CONFIG_PATH=$HOME/.bitcoin/bitcoin.conf
 
-# Seed a random password for JSON RPC server
-cat <<EOF > $HOME/.bitcoin/bitcoin.conf
-prune=${PRUNE:-0}
-testnet=${TESTNET:-1}
-regtest=${REGTEST:-0}
-disablewallet=${DISABLEWALLET:-1}
-printtoconsole=${PRINTTOCONSOLE:-1}
-EOF
+eval "VAR=\$TESTNET"
+export TESTNET=${VAR:-"0"}
+eval "VAR=\$REGTEST"
+export REGTEST=${VAR:-"0"}
 
-[[ -n $RPCUSER ]] && echo "rpcuser=${RPCUSER}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $RPCPASSWORD ]] && echo "rpcpassword=${RPCPASSWORD}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $WALLETNOTIFY ]] && echo "walletnotify=${WALLETNOTIFY}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $BLOCKNOTIFY ]] && echo "blocknotify=${BLOCKNOTIFY}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $TXINDEX ]] && echo "txindex=1" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $RPCWORKQUEUE ]] && echo "rpcworkqueue=${RPCWORKQUEUE}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $RPCTHREADS ]] && echo "rpcthreads=${RPCTHREADS}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $PAR ]] && echo "par=${PAR}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $DBCACHE ]] && echo "dbcache=${DBCACHE}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $ZMQPUBHASHTX ]] && echo "zmqpubhashtx=${ZMQPUBHASHTX}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $ZMQPUBHASHBLOCK ]] && echo "zmqpubhashblock=${ZMQPUBHASHBLOCK}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $ZMQPUBRAWBLOCK ]] && echo "zmqpubrawblock=${ZMQPUBRAWBLOCK}" >> $HOME/.bitcoin/bitcoin.conf
-[[ -n $ZMQPUBRAWTX ]] && echo "zmqpubrawtx=${ZMQPUBRAWTX}" >> $HOME/.bitcoin/bitcoin.conf
+echo "Removing old config to generate new from env variables"
+rm -rf $CONFIG_PATH
+touch $CONFIG_PATH
 
-cat $HOME/.bitcoin/bitcoin.conf
+CONF_PREFIX=""
+
+if [[ "$TESTNET" == "1" ]]; then
+  CONF_PREFIX="test."
+  echo "testnet=1" >> $CONFIG_PATH
+  elif [[ "$REGTEST" == "1" ]]; then
+      CONF_PREFIX="regtest."
+      echo "regtest=1" >> $CONFIG_PATH
+fi
+
+for name in VERSION ALERTNOTIFY BLOCKNOTIFY ASSUMEVALID CONF DATADIR DBCACHE LOADBLOCK MAXORPHANTX MAXMEMPOOL MEMPOOLEXPIRY BLOCKRECONSTRUCTIONEXTRATXN PAR PID PRUNE REINDEX REINDEX SYSPERMS TXINDEX ADDNODE BANSCORE BANTIME BIND CONNECT DISCOVER DNS DNSSEED EXTERNALIP FORCEDNSSEED LISTEN LISTENONION MAXCONNECTIONS MAXRECEIVEBUFFER MAXSENDBUFFER MAXTIMEADJUSTMENT ONION ONLYNET PERMITBAREMULTISIG PEERBLOOMFILTERS PORT PROXY PROXYRANDOMIZE RPCSERIALVERSION SEEDNODE TIMEOUT TORCONTROL TORPASSWORD UPNP WHITEBIND WHITELIST WHITELISTRELAY WHITELISTFORCERELAY MAXUPLOADTARGET DISABLEWALLET KEYPOOL FALLBACKFEE MINTXFEE PAYTXFEE RESCAN SALVAGEWALLET SPENDZEROCONFCHANGE TXCONFIRMTARGET USEHD WALLETRBF UPGRADEWALLET WALLET WALLETBROADCAST WALLETNOTIFY ZAPWALLETTXES ZMQPUBHASHBLOCK ZMQPUBHASHTX ZMQPUBRAWBLOCK ZMQPUBRAWTX UACOMMENT DEBUG HELP LOGIPS LOGTIMESTAMPS MINRELAYTXFEE MAXTXFEE PRINTTOCONSOLE SHRINKDEBUGFILE BYTESPERSIGOP DATACARRIER DATACARRIERSIZE MEMPOOLREPLACEMENT BLOCKMAXWEIGHT BLOCKMAXSIZE BLOCKPRIORITYSIZE BLOCKMINTXFEE SERVER REST RPCBIND RPCCOOKIEFILE RPCUSER RPCPASSWORD RPCAUTH RPCPORT RPCALLOWIP RPCTHREADS; do
+    eval "VAR=\$${name}"
+    if [[ "$name" == "PRUNE" ]]; then
+      VAR="${VAR:-0}"
+    fi
+    if [[ "$name" == "DISABLEWALLET" ]]; then
+      VAR="${VAR:-1}"
+    fi
+    if [[ "$name" == "PRINTTOCONSOLE" ]]; then
+      VAR="${VAR:-1}"
+    fi
+    [[ -n "$VAR" ]] && echo "${CONF_PREFIX}${name,,}=${VAR}" >> $CONFIG_PATH
+done
+
+cat $CONFIG_PATH
 
 echo "Initialization completed successfully"
