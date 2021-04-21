@@ -1,14 +1,16 @@
-#!/bin/bash
+#!/bin/sh
 
 set -ex
 
 # Generate bitcoin.conf
 btc_init
 
-if [ $# -gt 0 ]; then
-    args=("$@")
-else
-    args=("-rpcallowip=::/0")
+# Default / no argument invocation listens for RPC commands and has to accept non-localhost because of
+# Docker port proxying or Docker private networking.
+if [ $# -eq 0 ]; then
+    # If IPv6 is in the container do both:
+    #set -- '-rpcbind=[::]:8332' '-rpcallowip=::/0' '-rpcallowip=0.0.0.0/0'
+    set -- '-rpcbind=:8332' '-rpcallowip=0.0.0.0/0'
 fi
 
-exec bitcoind "${args[@]}"
+exec bitcoind "$@"
