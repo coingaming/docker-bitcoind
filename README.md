@@ -1,12 +1,30 @@
 Bitcoind for Docker
 ===================
 
-[![Docker Stars](https://img.shields.io/docker/stars/kylemanna/bitcoind.svg)](https://hub.docker.com/r/kylemanna/bitcoind/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/kylemanna/bitcoind.svg)](https://hub.docker.com/r/kylemanna/bitcoind/)
-[![Build Status](https://travis-ci.org/kylemanna/docker-bitcoind.svg?branch=master)](https://travis-ci.org/kylemanna/docker-bitcoind/)
-[![ImageLayers](https://images.microbadger.com/badges/image/kylemanna/bitcoind.svg)](https://microbadger.com/#/images/kylemanna/bitcoind)
+[![Docker Stars](https://img.shields.io/docker/stars/kylemanna/bitcoind.svg)](https://hub.docker.com/r/ayratbadykov/bitcoind/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/kylemanna/bitcoind.svg)](https://hub.docker.com/r/ayratbadykov/bitcoind/)
 
-Docker image that runs the Bitcoin bitcoind node in a container for easy deployment.
+This is a fork of `kylemanna/docker-bitcoind`. The only difference is you can configure your bicoin node with env variables by setting `CONFIG_FROM_ENV = true`. For example, in `docker-compose` file:
+
+```
+  name:
+    image: ayratbadykov/bitcoind:latest
+    environment:
+      RPCPASSWORD: bitcoinrpc
+      RPCUSER: bitcoinrpc
+      DISABLEWALLET: 0
+      CONFIG_FROM_ENV: "true"
+      TESTNET: 0
+      REGTEST: 1
+      SERVER: 1
+      RPCBIND: ":18443"
+      RPCALLOWIP: "0.0.0.0/0"
+    ports:
+      - 18443:18443/tcp
+      - 18444:18444/tcp
+    expose:
+      - "18444"
+```
 
 
 Requirements
