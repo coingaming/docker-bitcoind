@@ -1,8 +1,8 @@
 Bitcoind for Docker
 ===================
 
-[![Docker Stars](https://img.shields.io/docker/stars/kylemanna/bitcoind.svg)](https://hub.docker.com/r/ayratbadykov/bitcoind/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/kylemanna/bitcoind.svg)](https://hub.docker.com/r/ayratbadykov/bitcoind/)
+[![Docker Stars](https://img.shields.io/docker/stars/ayratbadykov/bitcoind.svg)](https://hub.docker.com/r/ayratbadykov/bitcoind/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ayratbadykov/bitcoind.svg)](https://hub.docker.com/r/ayratbadykov/bitcoind/)
 
 This is a fork of `kylemanna/docker-bitcoind`. The only difference is you can configure your bicoin node with env variables by setting `CONFIG_FROM_ENV = true`. For example, in `docker-compose` file:
 
