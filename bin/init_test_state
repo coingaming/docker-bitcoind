@@ -1,0 +1,26 @@
+#!/bin/sh
+
+sleep 2
+
+echo "mining init"
+
+bitcoin-cli createwallet "miner"
+address=$(bitcoin-cli -rpcwallet=miner getnewaddress)
+
+bitcoin-cli generatetoaddress 101 $address
+bitcoin-cli -rpcwallet=miner -named sendtoaddress address="${TO_ADDRESS}" amount="${AMOUNT}" fee_rate=10
+
+bitcoin-cli generatetoaddress 1 $address
+rm "/bitcoin/mine_block.sh"
+touch "/bitcoin/mine_block.sh"
+chmod +x ./mine_block.sh
+echo "/opt/bitcoin/bin/bitcoin-cli generatetoaddress 1 $address" >> "/bitcoin/mine_block.sh"
+
+echo "mining init finished"
+
+while true
+do
+	echo "mining a block"
+	./mine_block.sh
+        sleep 5
+done

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -m
 set -ex
 
 # This shouldn't be in the Dockerfile or containers built from the same image

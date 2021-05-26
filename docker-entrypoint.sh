@@ -15,4 +15,3 @@ fi
 
 # If not root (i.e. docker run --user $USER ...), then run as invoked
 exec "$@"
-
